@@ -1,4 +1,7 @@
 from core.nlp_engine import NLPEngine
+from core.bootstrap import bootstrap 
+
+bootstrap_system()
 
 engine = NLPEngine()
 
