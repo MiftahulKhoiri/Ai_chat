@@ -12,10 +12,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 VENV_DIR = BASE_DIR / "venv"
 REQ_FILE = BASE_DIR / "requirements.txt"
 
-DATA_PATH = BASE_DIR / "data" / "qa.json"
-CONTOH_PATH = BASE_DIR / "data" / "qa_contoh.json"
-MODEL_PATH = BASE_DIR / "model" / "vectorizer.pkl"
-
 
 # ===============================
 # VIRTUAL ENV
