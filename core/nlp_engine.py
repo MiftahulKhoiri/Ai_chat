@@ -1,36 +1,28 @@
 from core.ainlp import AiNLP
+from core.reasoning_engine import ReasoningEngine
 from core.language_model import LanguageModel
-from core.conversation_memory import ConversationMemory
 from core.response_generator import ResponseGenerator
-import os
 
 class ConversationalEngine:
     def __init__(self):
         self.ainlp = AiNLP()
-        self.memory = ConversationMemory()
+        self.reasoner = ReasoningEngine(self.ainlp)
         self.lm = LanguageModel()
         self.generator = ResponseGenerator(self.lm)
-
-        model_path = "model/language_model.pkl"
-        if os.path.exists(model_path):
-            self.lm.load(model_path)
-
-    def train(self, excel_path):
-        df = self.ainlp.preprocess_and_analyze(excel_path)
-        text_col = 'full_text' if 'full_text' in df.columns else 'comment'
-        sentences = df[text_col].str.lower().tolist()
-        self.lm.train(sentences)
-        self.lm.save("model/language_model.pkl")
 
     def chat(self, text):
         cleaned = self.ainlp.clean_text_full(text)
         if not cleaned:
             return "Saya tidak memahami input tersebut."
 
+        tokens = self.ainlp.tokenize_text(cleaned)
+        tokens = self.ainlp.remove_stopwords(tokens)
+
+        # 1️⃣ RULE BASED REASONING
+        rule_response = self.reasoner.apply(cleaned, tokens)
+        if rule_response:
+            return rule_response
+
+        # 2️⃣ LANGUAGE MODEL (fallback)
         response = self.generator.generate(cleaned)
-
-        if not response:
-            response = "Bisa jelaskan lebih lanjut?"
-
-        self.memory.add(text, response)
-        return response
+        return response or "Bisa kamu jelaskan lebih lanjut?"
