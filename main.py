@@ -1,21 +1,16 @@
-from core.nlp_engine import NLPEngine
-from core.bootstrap import bootstrap 
+from core.nlp_engine import ConversationalEngine
 
-bootstrap()
-
-engine = NLPEngine()
+bot = ConversationalEngine()
 
 # TRAIN SEKALI
-engine.train_language_model("data/training_data.xlsx")
+# bot.train("data/training_data.xlsx")
 
-# PREDIKSI
+print("Bot siap berbicara (ketik exit untuk keluar)")
+
 while True:
-    text = input("Kamu: ")
-    if text.lower() == "exit":
+    user = input("Kamu: ")
+    if user.lower() == "exit":
         break
 
-    next_word = engine.predict_next_word(text)
-    if next_word:
-        print(f"Bot: mungkin kata berikutnya '{next_word}'")
-    else:
-        print("Bot: saya belum tahu kelanjutannya")
+    reply = bot.chat(user)
+    print("Bot:", reply)
