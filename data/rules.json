@@ -1,0 +1,27 @@
+{
+  "emotion": {
+    "priority": 1,
+    "negative_strong": {
+      "threshold": -3,
+      "response": "Kami mohon maaf atas pengalaman yang kurang menyenangkan. Kami akan menindaklanjuti masukan Anda."
+    },
+    "negative_light": {
+      "threshold": -1,
+      "response": "Terima kasih atas masukannya. Kami akan memperbaiki ke depannya."
+    },
+    "positive": {
+      "threshold": 3,
+      "response": "Terima kasih atas apresiasinya 🙏 Kami senang bisa membantu."
+    }
+  },
+
+  "info": {
+    "priority": 2,
+    "media_response": "Informasi ini berasal dari media. Perlu verifikasi lebih lanjut."
+  },
+
+  "chitchat": {
+    "priority": 3,
+    "fallback": "Bisa kamu ceritakan lebih lanjut?"
+  }
+}
