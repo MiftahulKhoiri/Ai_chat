@@ -79,35 +79,4 @@ def bootstrap():
         log.warning("Restart setelah update...")
         restart_in_venv()
 
-    # ===============================
-    # INIT DATA & MODEL (JALAN SEKALI)
-    # ===============================
-
-    # 5. Generate dataset awal jika belum ada
-    if not DATA_PATH.exists():
-        log.warning("qa.json belum ada, generate dataset awal...")
-
-        if not CONTOH_PATH.exists():
-            raise RuntimeError("qa_contoh.json tidak ditemukan")
-
-        subprocess.check_call(
-            [str(VENV_DIR / "bin" / "python"), "tools/generate_dataset.py"],
-            cwd=str(BASE_DIR)
-        )
-
-        log.info("Dataset awal berhasil dibuat")
-    else:
-        log.info("qa.json sudah ada, skip generate dataset")
-
-    # 6. Training model awal jika belum ada
-    if not MODEL_PATH.exists():
-        log.warning("Model belum ada, training awal...")
-
-        subprocess.check_call(
-            [str(VENV_DIR / "bin" / "python"),"-m", "core.trainer"],
-            cwd=str(BASE_DIR)
-        )
-
-        log.info("Training awal selesai")
-    else:
-        log.info("Model sudah ada, skip training awal")
+  
