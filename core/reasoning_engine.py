@@ -7,20 +7,16 @@ class ReasoningEngine:
         with open(rule_path, "r", encoding="utf-8") as f:
             self.rules = json.load(f)
 
-    def sentiment_score(self, tokens):
-        score = 0
-        for w in tokens:
-            score += self.ainlp.lexicon_positive_dict.get(w, 0)
-            score += self.ainlp.lexicon_negative_dict.get(w, 0)
-        return score
-
-    def apply(self, cleaned_text, tokens):
-        score = self.sentiment_score(tokens)
+    def apply(self, cleaned_text, tokens, sentiment_result):
+        """
+        sentiment_result = output langsung dari AiNLP.sentiment_analysis()
+        """
+        score = sentiment_result["Score"]
         avg_score = self.memory.avg_sentiment()
 
-        # ========= PRIORITY 1: EMOSI =========
         emo = self.rules["emotion"]
 
+        # ========= PRIORITY 1: EMOSI =========
         if score <= emo["negative_strong"]["threshold"] or avg_score <= -2:
             return emo["negative_strong"]["response"], score
 
