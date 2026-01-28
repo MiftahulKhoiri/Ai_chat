@@ -2,53 +2,40 @@ class ReasoningEngine:
     def __init__(self, ainlp):
         self.ainlp = ainlp
 
-    def apply(self, cleaned_text, tokens):
-        """
-        cleaned_text : hasil clean_text_full
-        tokens       : hasil tokenize + stopword removal
-        """
+    def apply(self, tokens):
+        sentiment = self.ainlp.sentiment_analysis(tokens)
+        score = 0
 
-        words = set(tokens)
+        # hitung ulang score
+        for w in tokens:
+            score += self.ainlp.lexicon_positive_dict.get(w, 0)
+            score += self.ainlp.lexicon_negative_dict.get(w, 0)
 
         # ===============================
-        # RULE 1 — EMOSI NEGATIF (LEXICON)
+        # RULE NEGATIF KUAT
         # ===============================
-        neg_hits = [w for w in words if w in self.ainlp.lexicon_negative_dict]
-        if neg_hits:
+        if score <= -3:
             return (
-                "Saya menangkap adanya perasaan kurang nyaman. "
-                "Terima kasih sudah menyampaikannya, kami akan menindaklanjuti."
+                "Kami mohon maaf atas pengalaman yang kurang menyenangkan. "
+                "Masukan Anda sangat berarti bagi kami."
             )
 
         # ===============================
-        # RULE 2 — EMOSI POSITIF
+        # RULE NEGATIF RINGAN
         # ===============================
-        pos_hits = [w for w in words if w in self.ainlp.lexicon_positive_dict]
-        if pos_hits:
+        if -3 < score < 0:
             return (
-                "Terima kasih atas respon positifnya 🙏 "
-                "Kami senang bisa membantu."
+                "Terima kasih atas masukannya. "
+                "Kami akan berusaha memperbaiki ke depannya."
             )
 
         # ===============================
-        # RULE 3 — LAPAR + PUASA (LOGIKA)
+        # RULE POSITIF
         # ===============================
-        if "lapar" in words and "puasa" in words:
+        if score >= 3:
             return (
-                "Jika sedang puasa, rasa lapar memang wajar. "
-                "Tetap semangat menjalankan puasanya."
+                "Terima kasih atas apresiasinya 🙏 "
+                "Kami senang layanan kami bermanfaat."
             )
 
-        # ===============================
-        # RULE 4 — MEDIA VS INDIVIDU
-        # ===============================
-        if any(media in cleaned_text for media in self.ainlp.news_media):
-            return (
-                "Informasi ini berasal dari media. "
-                "Perlu verifikasi lebih lanjut untuk memastikan kebenarannya."
-            )
-
-        # ===============================
-        # TIDAK ADA RULE COCOK
-        # ===============================
         return None
